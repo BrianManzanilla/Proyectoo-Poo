@@ -28,12 +28,13 @@ public class FrmGestionMesa extends javax.swing.JFrame {
     private void initComponents() {
 
         lbTMesa = new javax.swing.JLabel();
+        tbpCategoria = new javax.swing.JTabbedPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         lbTMesa.setFont(new java.awt.Font("Sylfaen", 1, 48)); // NOI18N
         lbTMesa.setForeground(new java.awt.Color(0, 102, 102));
-        lbTMesa.setText("Mesa");
+        lbTMesa.setText("Mesa X");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -43,13 +44,18 @@ public class FrmGestionMesa extends javax.swing.JFrame {
                 .addGap(147, 147, 147)
                 .addComponent(lbTMesa, javax.swing.GroupLayout.PREFERRED_SIZE, 359, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(158, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(tbpCategoria))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(lbTMesa)
-                .addContainerGap(406, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(tbpCategoria, javax.swing.GroupLayout.DEFAULT_SIZE, 388, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
@@ -92,5 +98,6 @@ public class FrmGestionMesa extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel lbTMesa;
+    private javax.swing.JTabbedPane tbpCategoria;
     // End of variables declaration//GEN-END:variables
 }
