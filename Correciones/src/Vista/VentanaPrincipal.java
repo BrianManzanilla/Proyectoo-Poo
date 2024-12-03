@@ -1,11 +1,13 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
+ */
 package Vista;
-import Contabilidad.InventarioMesa;
-import Inventarizacion.InventarioProductos;
-import Inventarizacion.Producto;
-import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
+import Modelo.*;
+/**
+ *
+ * @author carlos
+ */
 public class VentanaPrincipal extends javax.swing.JFrame {
     private InventarioProductos inventarioProductos;
     private InventarioMesa inventarioMesas;
@@ -15,22 +17,11 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     public VentanaPrincipal() {
         inventarioProductos = new InventarioProductos();
         inventarioMesas = new InventarioMesa();
-        inicializarInventario(); // Llama a este método para llenar el inventario con datos
+
 
         initComponents();
     }
-        private void inicializarInventario() {
-        inventarioProductos.agregarCategoria("Tacos");
-        inventarioProductos.agregarProductoACategoria("Tacos", new Producto("Pastor", 15.5));
-        inventarioProductos.agregarProductoACategoria("Tacos", new Producto("Suadero", 18.0));
 
-        inventarioProductos.agregarCategoria("Bebidas");
-        inventarioProductos.agregarProductoACategoria("Bebidas", new Producto("Agua de Horchata", 10.0));
-        inventarioProductos.agregarProductoACategoria("Bebidas", new Producto("Refresco", 12.0));
-
-        inventarioMesas.agregarMesa(1);
-        inventarioMesas.agregarMesa(2);
-    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -92,6 +83,11 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         btnProductos.setText("Productos");
         btnProductos.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(0, 102, 102), new java.awt.Color(0, 153, 153), new java.awt.Color(0, 51, 51), new java.awt.Color(0, 51, 51)));
         btnProductos.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnProductos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnProductosActionPerformed(evt);
+            }
+        });
 
         btnVentas.setBackground(new java.awt.Color(0, 153, 153));
         btnVentas.setFont(new java.awt.Font("Sylfaen", 1, 24)); // NOI18N
@@ -193,6 +189,11 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         FrmConfiguraciones FrmConfiguraciones=new FrmConfiguraciones();
         FrmConfiguraciones.setVisible(true);
     }//GEN-LAST:event_btnConfiguracionActionPerformed
+
+    private void btnProductosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProductosActionPerformed
+        FrmCategoriaAPMuestra FrmCategoriaAPMuestra = new FrmCategoriaAPMuestra();
+        FrmCategoriaAPMuestra.setVisible(true);
+    }//GEN-LAST:event_btnProductosActionPerformed
 
     /**
      * @param args the command line arguments

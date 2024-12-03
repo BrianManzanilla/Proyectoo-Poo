@@ -4,6 +4,9 @@
  */
 package Vista;
 
+import Modelo.Categoria;
+import Modelo.InventarioProductos;
+import Modelo.Sabor;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -12,6 +15,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -19,11 +24,14 @@ import java.util.List;
  */
 public class FrmConfiguraciones extends javax.swing.JFrame {
 
+
+
     /**
      * Creates new form FrmConfiguraciones
      */
     public FrmConfiguraciones() {
         initComponents();
+
     }
     
     private void actualizarArchivoNumeroMesas(int numeroMesas, String archivoNumeroMesas) 
@@ -34,7 +42,73 @@ public class FrmConfiguraciones extends javax.swing.JFrame {
             System.err.println("Ocurrió un error al actualizar el archivo de número de mesas: " + e.getMessage());
         }
     }
+    ////////////////////////////////////////////////////////////////////////////////
+    private InventarioProductos cargarInventarioDesdeArchivo(File file) {
+        InventarioProductos inventario = new InventarioProductos();
 
+        // Si el archivo no existe, devolver un inventario vacío
+        if (!file.exists()) {
+            return inventario;
+        }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String linea;
+
+            while ((linea = reader.readLine()) != null) {
+                String[] datos = linea.split(";"); // Usamos punto y coma como delimitador
+                if (datos.length == 4) {
+                    String categoria = datos[0].trim();
+                    String nombreSabor = datos[1].trim();
+                    String descripcion = datos[2].trim();
+                    double precio = Double.parseDouble(datos[3].trim());
+
+                    // Crear y agregar los datos al inventario
+                    Sabor sabor = new Sabor(nombreSabor, precio, descripcion);
+                    if (!inventario.getCategorias().containsKey(categoria)) {
+                        inventario.agregarCategoria(categoria);
+                    }
+                    inventario.agregarProductoACategoria(categoria, sabor);
+                }
+            }
+        } catch (IOException | NumberFormatException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error al cargar el inventario: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+        return inventario;
+    }
+
+    private void guardarInventarioEnArchivo(InventarioProductos inventario, File file) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            for (Map.Entry<String, Categoria> entry : inventario.getCategorias().entrySet()) {
+                String categoria = entry.getKey();
+                Categoria cat = entry.getValue();
+
+                for (Sabor sabor : cat.getProductos()) {
+                    String linea = categoria + ";" + sabor.getNombreS() + ";" + sabor.getDescripcion() + ";" + sabor.getPrecioS();
+                    writer.write(linea);
+                    writer.newLine();
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error al guardar el inventario: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+
+    private void borrarDatosAgregandoProductos ()
+    {
+        txtCategoria.setText("");
+        txtNombre.setText("");
+        txtDescripcion.setText("");
+        txtPrecio.setText("");
+    }
+    ////////////////////////////////////////////////////////////////////////////////////7
+    private void MuestraDatosProducto()
+    {
+        
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -52,20 +126,20 @@ public class FrmConfiguraciones extends javax.swing.JFrame {
         btnAgregarM = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        txtCategoria = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
-        jTextField3 = new javax.swing.JTextField();
+        txtDescripcion = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        jTextField4 = new javax.swing.JTextField();
+        txtNombre = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        jSpinner1 = new javax.swing.JSpinner();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
-        jButton3 = new javax.swing.JButton();
+        listProductos = new javax.swing.JList<>();
+        btnEliminarP = new javax.swing.JButton();
         lbElementoS = new javax.swing.JLabel();
+        txtPrecio = new javax.swing.JTextField();
         jPanel4 = new javax.swing.JPanel();
         lbTitulo = new javax.swing.JLabel();
         btnAtras = new javax.swing.JButton();
@@ -131,9 +205,14 @@ public class FrmConfiguraciones extends javax.swing.JFrame {
 
         jLabel2.setFont(new java.awt.Font("Segoe Print", 1, 18)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(0, 102, 102));
-        jLabel2.setText("Sabor:");
+        jLabel2.setText("Nombre:");
 
         jButton2.setText("Agregar");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jLabel3.setFont(new java.awt.Font("Segoe Print", 1, 18)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(0, 102, 102));
@@ -151,14 +230,14 @@ public class FrmConfiguraciones extends javax.swing.JFrame {
         jLabel6.setForeground(new java.awt.Color(0, 102, 102));
         jLabel6.setText("Eliminar Producto");
 
-        jList1.setModel(new javax.swing.AbstractListModel<String>() {
+        listProductos.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
         });
-        jScrollPane1.setViewportView(jList1);
+        jScrollPane1.setViewportView(listProductos);
 
-        jButton3.setText("Eliminar");
+        btnEliminarP.setText("Eliminar");
 
         lbElementoS.setText("Seleccionado");
 
@@ -178,16 +257,17 @@ public class FrmConfiguraciones extends javax.swing.JFrame {
                             .addComponent(jLabel3)
                             .addComponent(jLabel4)
                             .addComponent(jLabel5))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jTextField2)
-                            .addComponent(jTextField3)
-                            .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(txtCategoria, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(txtDescripcion, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(txtNombre, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(txtPrecio)
+                                .addGap(42, 42, 42)
                                 .addComponent(jButton2)))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 133, Short.MAX_VALUE)
+                .addGap(100, 100, 100)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -197,7 +277,7 @@ public class FrmConfiguraciones extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lbElementoS)
-                            .addComponent(jButton3))
+                            .addComponent(btnEliminarP))
                         .addGap(113, 113, 113))))
         );
         jPanel3Layout.setVerticalGroup(
@@ -211,16 +291,16 @@ public class FrmConfiguraciones extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel5))
                         .addGap(28, 28, 28)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel2)
-                            .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(28, 28, 28)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
-                            .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(txtDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -230,12 +310,12 @@ public class FrmConfiguraciones extends javax.swing.JFrame {
                         .addGap(28, 28, 28)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel4)
-                            .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton2))
+                            .addComponent(jButton2)
+                            .addComponent(txtPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addContainerGap(22, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton3)
+                        .addComponent(btnEliminarP)
                         .addGap(38, 38, 38))))
         );
 
@@ -392,6 +472,69 @@ public class FrmConfiguraciones extends javax.swing.JFrame {
         this.dispose(); 
     }//GEN-LAST:event_btnAtrasActionPerformed
 
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        String archivo = "Productos.txt";
+
+        try {
+            // Validar campos de entrada
+            String categoria = txtCategoria.getText().trim();
+            String nombreSabor = txtNombre.getText().trim();
+            String descripcion = txtDescripcion.getText().trim();
+
+            if (categoria.isEmpty() || nombreSabor.isEmpty() || descripcion.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Por favor, llena todos los campos.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (txtPrecio.getText().trim().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "El campo 'Precio' no puede estar vacío.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            double precio;
+            try {
+                precio = Double.parseDouble(txtPrecio.getText().trim());
+                if (precio < 0) {
+                    JOptionPane.showMessageDialog(this, "El precio no puede ser negativo.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "El precio debe ser un número válido.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Crear archivo si no existe
+            File file = new File(archivo);
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+
+            // Cargar el inventario desde el archivo
+            InventarioProductos inventario = cargarInventarioDesdeArchivo(file);
+
+            // Verificar si la categoría existe, si no, agregarla
+            if (!inventario.getCategorias().containsKey(categoria)) {
+                inventario.agregarCategoria(categoria);
+            }
+
+            // Crear el nuevo sabor y agregarlo a la categoría
+            Sabor nuevoSabor = new Sabor(nombreSabor, precio, descripcion);
+            inventario.agregarProductoACategoria(categoria, nuevoSabor);
+
+            // Guardar el inventario actualizado en el archivo
+            guardarInventarioEnArchivo(inventario, file);
+
+            // Mostrar mensaje de éxito
+            JOptionPane.showMessageDialog(this, "Producto agregado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+
+            // Limpiar los campos después de agregar el producto
+            borrarDatosAgregandoProductos();
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Ocurrió un error inesperado: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -431,27 +574,27 @@ public class FrmConfiguraciones extends javax.swing.JFrame {
     private javax.swing.JButton btnAgregarM;
     private javax.swing.JButton btnAtras;
     private javax.swing.JButton btnEliminarMesa;
+    private javax.swing.JButton btnEliminarP;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JList<String> jList1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JSpinner jSpinner1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
     private javax.swing.JTabbedPane jtbpConfig;
     private javax.swing.JLabel lbElementoS;
     private javax.swing.JLabel lbNTNumM;
     private javax.swing.JLabel lbNumMesas;
     private javax.swing.JLabel lbTitulo;
+    private javax.swing.JList<String> listProductos;
+    private javax.swing.JTextField txtCategoria;
+    private javax.swing.JTextField txtDescripcion;
+    private javax.swing.JTextField txtNombre;
+    private javax.swing.JTextField txtPrecio;
     // End of variables declaration//GEN-END:variables
 }

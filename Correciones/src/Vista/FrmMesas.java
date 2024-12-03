@@ -41,7 +41,7 @@ public class FrmMesas extends javax.swing.JFrame {
     private void initComponents() {
 
         lbTitulo = new javax.swing.JLabel();
-        BtnAgregar = new javax.swing.JButton();
+        BtnAtras = new javax.swing.JButton();
         ScrpListaM = new javax.swing.JScrollPane();
         PnlListaM = new javax.swing.JPanel();
 
@@ -51,10 +51,10 @@ public class FrmMesas extends javax.swing.JFrame {
         lbTitulo.setForeground(new java.awt.Color(0, 102, 102));
         lbTitulo.setText("Mesas del Restaurante");
 
-        BtnAgregar.setText("Agregar");
-        BtnAgregar.addActionListener(new java.awt.event.ActionListener() {
+        BtnAtras.setText("Atras");
+        BtnAtras.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BtnAgregarActionPerformed(evt);
+                BtnAtrasActionPerformed(evt);
             }
         });
 
@@ -65,12 +65,12 @@ public class FrmMesas extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(BtnAgregar, javax.swing.GroupLayout.Alignment.TRAILING)
+            .addComponent(BtnAtras, javax.swing.GroupLayout.Alignment.TRAILING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(23, 23, 23)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(ScrpListaM)
-                    .addComponent(lbTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, 609, Short.MAX_VALUE))
+                    .addComponent(lbTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, 552, Short.MAX_VALUE))
                 .addGap(39, 39, 39))
         );
         layout.setVerticalGroup(
@@ -79,9 +79,9 @@ public class FrmMesas extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(lbTitulo)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(ScrpListaM, javax.swing.GroupLayout.DEFAULT_SIZE, 230, Short.MAX_VALUE)
+                .addComponent(ScrpListaM, javax.swing.GroupLayout.DEFAULT_SIZE, 183, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(BtnAgregar)
+                .addComponent(BtnAtras)
                 .addGap(15, 15, 15))
         );
 
@@ -124,9 +124,9 @@ public class FrmMesas extends javax.swing.JFrame {
                 System.err.println("Error al leer el archivo de número de mesas: " + e.getMessage());
             }
     }
-    private void BtnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAgregarActionPerformed
+    private void BtnAtrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAtrasActionPerformed
 
-    }//GEN-LAST:event_BtnAgregarActionPerformed
+    }//GEN-LAST:event_BtnAtrasActionPerformed
 
     /**
      * @param args the command line arguments
@@ -164,7 +164,7 @@ public class FrmMesas extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton BtnAgregar;
+    private javax.swing.JButton BtnAtras;
     private javax.swing.JPanel PnlListaM;
     private javax.swing.JScrollPane ScrpListaM;
     private javax.swing.JLabel lbTitulo;
