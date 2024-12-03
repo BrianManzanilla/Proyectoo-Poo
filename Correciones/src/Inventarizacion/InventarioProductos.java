@@ -49,4 +49,29 @@ public class InventarioProductos {
             System.out.println("La categoria " + nombreCategoria + " no existe.");
         }
     }
+         //Mostrar categorias
+     public void mostrarCategorias(){
+        if (categorias.isEmpty()) {
+            System.out.println("No hay categorías disponibles.");
+        } else {
+            System.out.println("Categorías disponibles:");
+            for (String nombreCategoria : categorias.keySet()) {
+                System.out.println(nombreCategoria);
+            }
+        }
+     }
+
+     // Mostrar productos y precios en una categoria específica
+    public void mostrarProductosEnCategoria(String nombreCategoria) {
+        Categoria categoria = categorias.get(nombreCategoria);
+        List<Producto> productos = categoria.getProductos();
+        
+        if (productos.isEmpty()) {
+            System.out.println("  No hay productos en esta categoria.");
+        } else {
+            for (Producto producto : productos) {
+                System.out.println("  Producto: " + producto.getNombre() + ", Precio: $" + producto.getPrecio());
+            }
+        }
+    }
     }
